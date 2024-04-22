@@ -5,8 +5,11 @@ import re
 from os import listdir
 
 from xml.dom.minidom import parse
+import nltk
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import wordnet
 
 
    
@@ -38,6 +41,18 @@ def get_tag(token, spans) :
       elif start>=spanS and end<=spanE : return "I-"+spanT
 
    return "O"
+
+def get_wordnet_pos(treebank_tag):
+   if treebank_tag.startswith('J'):
+      return wordnet.ADJ
+   elif treebank_tag.startswith('V'):
+      return wordnet.VERB
+   elif treebank_tag.startswith('N'):
+      return wordnet.NOUN
+   elif treebank_tag.startswith('R'):
+      return wordnet.ADV
+   else:
+      return wordnet.NOUN  # Default to noun if POS tag is not recognized
  
 ## --------- Feature extractor ----------- 
 ## -- Extract features for each token in given sentence
@@ -57,10 +72,31 @@ def extract_features(tokens) :
       tokenFeatures.append("pre3="+t[:3])
       tokenFeatures.append("postag="+pos_tags[k][1])
 
+      '''lemmatizer = WordNetLemmatizer()
+      pos = pos_tags[k][1]
+      lemma = lemmatizer.lemmatize(t, pos=get_wordnet_pos(pos))
+      tokenFeatures.append("lemma="+lemma)'''
+
       if re.search(r'[0-9-]', t):
-         tokenFeatures.append("has_num=Yes")
+         if re.search(r'[a-zA-Z]', t):
+            tokenFeatures.append("has_num=Some")
+         else:
+            tokenFeatures.append("has_num=All")
       else:
-         tokenFeatures.append("has_num=No")
+         tokenFeatures.append("has_num=None")
+      
+      '''if re.search(r'\d', t):
+         if re.search(r'[a-zA-Z]', t):
+            tokenFeatures.append("has_num=Some")
+         else:
+            tokenFeatures.append("has_num=All")
+      else: 
+         tokenFeatures.append("has_num=No")'''
+
+      '''if '-' in t:
+         tokenFeatures.append("dashes=Yes")
+      else:
+         tokenFeatures.append("dashes=No")'''
 
       if t.isupper():
          tokenFeatures.append("cap=All")
@@ -84,6 +120,10 @@ def extract_features(tokens) :
          tokenFeatures.append("formNext="+tNext)
          tokenFeatures.append("suf3Next="+tNext[-4:])
          tokenFeatures.append("pre3Next="+tNext[:3])
+         '''if tNext in ['Acid','acid'] or t in ['Acid','acid']:
+            tokenFeatures.append("isAcid=Yes")
+         else:
+            tokenFeatures.append("isAcid=No")'''
       else:
          tokenFeatures.append("EoS")
     
