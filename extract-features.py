@@ -68,36 +68,43 @@ def extract_features(tokens) :
 
       tokenFeatures.append("form="+t)
       tokenFeatures.append("lowerform="+t.lower())
-      tokenFeatures.append("suf3="+t[-4:])
+      tokenFeatures.append("suf3="+t[-3:])
       tokenFeatures.append("pre3="+t[:3])
+
+      #POSTagging
       tokenFeatures.append("postag="+pos_tags[k][1])
 
+      #Lemmatizer
       '''lemmatizer = WordNetLemmatizer()
       pos = pos_tags[k][1]
       lemma = lemmatizer.lemmatize(t, pos=get_wordnet_pos(pos))
       tokenFeatures.append("lemma="+lemma)'''
 
+      #Dashes and numbers
       if re.search(r'[0-9-]', t):
          if re.search(r'[a-zA-Z]', t):
-            tokenFeatures.append("has_num=Some")
+            tokenFeatures.append("has_spcar=Some")
          else:
-            tokenFeatures.append("has_num=All")
+            tokenFeatures.append("has_spcar=All")
       else:
-         tokenFeatures.append("has_num=None")
+         tokenFeatures.append("has_spcar=None")
       
+      #Numbers
       '''if re.search(r'\d', t):
          if re.search(r'[a-zA-Z]', t):
             tokenFeatures.append("has_num=Some")
          else:
             tokenFeatures.append("has_num=All")
       else: 
-         tokenFeatures.append("has_num=No")'''
+         tokenFeatures.append("has_num=None")
 
-      '''if '-' in t:
+      #Dashes
+      if '-' in t:
          tokenFeatures.append("dashes=Yes")
       else:
          tokenFeatures.append("dashes=No")'''
 
+      #Capital patterns
       if t.isupper():
          tokenFeatures.append("cap=All")
       elif t[0].isupper():
@@ -105,27 +112,55 @@ def extract_features(tokens) :
       else:  
          tokenFeatures.append("cap=None")
 
+      #Previous word
       if k>0:
          tPrev = tokens[k-1][0]
          tokenFeatures.append("formPrev="+tPrev)
-         tokenFeatures.append("suf3Prev="+tPrev[-4:])
+         tokenFeatures.append("suf3Prev="+tPrev[-3:])
          tokenFeatures.append("pre3Prev="+tPrev[:3])
-
-      else:
+         #tokenFeatures.append("postagPrev="+pos_tags[k-1][1])
+      else: 
          tokenFeatures.append("BoS")
          #tokenFeatures.append("cap=False")
 
+      #2-previous word
+      '''if k>1 and k!= 0:
+         tPrev = tokens[k-2][0]
+         tokenFeatures.append("formPrev2="+tPrev)
+         tokenFeatures.append("suf3Prev2="+tPrev[-3:])
+         tokenFeatures.append("pre3Prev2="+tPrev[:3])
+      else:
+         tokenFeatures.append("formPrev2=None")
+         #tokenFeatures.append("cap=False")'''
+
+      #Next word
       if k<len(tokens)-1 :
          tNext = tokens[k+1][0]
          tokenFeatures.append("formNext="+tNext)
-         tokenFeatures.append("suf3Next="+tNext[-4:])
+         tokenFeatures.append("suf3Next="+tNext[-3:])
          tokenFeatures.append("pre3Next="+tNext[:3])
+         #tokenFeatures.append("postagNext="+pos_tags[k+1][1])
          '''if tNext in ['Acid','acid'] or t in ['Acid','acid']:
             tokenFeatures.append("isAcid=Yes")
          else:
             tokenFeatures.append("isAcid=No")'''
       else:
          tokenFeatures.append("EoS")
+
+      #2-next word
+      '''if k<len(tokens)-2 and k != len(tokens)-1:
+         tNext = tokens[k+2][0]
+         tokenFeatures.append("formNext2="+tNext)
+         tokenFeatures.append("suf3Next2="+tNext[-3:])
+         tokenFeatures.append("pre3Next2="+tNext[:3])
+      else:
+         tokenFeatures.append("formNext2=None")'''
+      
+      #Ends in s
+      '''if t[-1] == 's':
+         tokenFeatures.append("is_plural=Yes")
+      else:
+         tokenFeatures.append("is_plural=No")'''
     
       result.append(tokenFeatures)
     
