@@ -57,7 +57,7 @@ def get_wordnet_pos(treebank_tag):
 ## --------- Feature extractor ----------- 
 ## -- Extract features for each token in given sentence
 
-def extract_features(tokens) :
+def extract_features(tokens, drugs, brands, groups, drug_names) :
 
    # for each token, generate list of features and add it to the result
    result = []
@@ -68,6 +68,7 @@ def extract_features(tokens) :
 
       tokenFeatures.append("form="+t)
       tokenFeatures.append("lowerform="+t.lower())
+      tokenFeatures.append("length="+str(len(str(t))))
       tokenFeatures.append("suf3="+t[-3:])
       tokenFeatures.append("pre3="+t[:3])
 
@@ -112,10 +113,22 @@ def extract_features(tokens) :
       else:  
          tokenFeatures.append("cap=None")
 
+      if t.lower() in drugs:
+         tokenFeatures.append("resource=Drug")
+      elif t.lower() in drug_names:
+         tokenFeatures.append("resource=Drug_n")
+      elif t.lower() in brands:
+         tokenFeatures.append("resource=Brand")
+      elif t.lower() in groups:
+         tokenFeatures.append("resource=Group")
+      else:
+         tokenFeatures.append("resource=None")
+
       #Previous word
       if k>0:
          tPrev = tokens[k-1][0]
          tokenFeatures.append("formPrev="+tPrev)
+         #tokenFeatures.append("lowerformPrev="+tPrev.lower())
          tokenFeatures.append("suf3Prev="+tPrev[-3:])
          tokenFeatures.append("pre3Prev="+tPrev[:3])
          #tokenFeatures.append("postagPrev="+pos_tags[k-1][1])
@@ -137,6 +150,7 @@ def extract_features(tokens) :
       if k<len(tokens)-1 :
          tNext = tokens[k+1][0]
          tokenFeatures.append("formNext="+tNext)
+         #tokenFeatures.append("lowerformNext="+tNext.lower())
          tokenFeatures.append("suf3Next="+tNext[-3:])
          tokenFeatures.append("pre3Next="+tNext[:3])
          #tokenFeatures.append("postagNext="+pos_tags[k+1][1])
@@ -161,10 +175,38 @@ def extract_features(tokens) :
          tokenFeatures.append("is_plural=Yes")
       else:
          tokenFeatures.append("is_plural=No")'''
+      
     
       result.append(tokenFeatures)
     
    return result
+
+def get_resources(dir):
+   drugs = []
+   brands = []
+   groups = []
+   with open(dir, 'r') as file:
+      # Read the file line by line
+      for line in file:
+         l = line.strip().split('|')
+         if l[1] == 'drug':
+            drugs.append(l[0].lower())
+         elif l[1] == 'brand':
+            brands.append(l[0].lower())
+         elif l[1] == 'group':
+            groups.append(l[0].lower())
+
+   return drugs, brands, groups
+
+def get_drug_names(dir):
+   drug_names = []
+   with open(dir, 'r') as file:
+         # Read the file line by line
+         for line in file:
+            l = line.strip()
+            drug_names.append(l.lower())
+   return drug_names
+
 
 
 ## --------- MAIN PROGRAM ----------- 
@@ -178,6 +220,8 @@ def extract_features(tokens) :
 
 # directory with files to process
 datadir = sys.argv[1]
+drugs_dir = sys.argv[2]
+drug_names_dir = sys.argv[3]
 
 # process each file in directory
 for f in listdir(datadir) :
@@ -202,8 +246,12 @@ for f in listdir(datadir) :
 
       # convert the sentence to a list of tokens
       tokens = tokenize(stext)
+      # get drugs from resources
+      drugs, brands, groups = get_resources(drugs_dir)
+      # get drugs names from resources
+      drug_names = get_drug_names(drug_names_dir)
       # extract sentence features
-      features = extract_features(tokens)
+      features = extract_features(tokens, drugs, brands, groups, drug_names)
 
       # print features in format expected by crfsuite trainer
       for i in range (0,len(tokens)) :

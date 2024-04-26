@@ -4,8 +4,8 @@ BASEDIR=/Users/gabrielvayaabad/Desktop/MDS/S2/MUD/D2
 
 # convert datasets to feature vectors
 echo "Extracting features..."
-python3 extract-features.py $BASEDIR/MUD-D2/data/train/ > $BASEDIR/MUD-D2/train.feat
-python3 extract-features.py $BASEDIR/MUD-D2/data/devel/ > $BASEDIR/MUD-D2/devel.feat
+python3 extract-features.py $BASEDIR/MUD-D2/data/train/ > $BASEDIR/MUD-D2/train.feat $BASEDIR/MUD-D2/resources/DrugBank.txt $BASEDIR/MUD-D2/resources/HSDB.txt 
+python3 extract-features.py $BASEDIR/MUD-D2/data/devel/ > $BASEDIR/MUD-D2/devel.feat $BASEDIR/MUD-D2/resources/DrugBank.txt $BASEDIR/MUD-D2/resources/HSDB.txt 
 
 # train CRF model
 echo "Training CRF model..."
