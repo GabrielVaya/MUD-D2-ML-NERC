@@ -129,6 +129,7 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
          tPrev = tokens[k-1][0]
          tokenFeatures.append("formPrev="+tPrev)
          #tokenFeatures.append("lowerformPrev="+tPrev.lower())
+         #tokenFeatures.append("lengthPrev="+str(len(str(tPrev))))
          tokenFeatures.append("suf3Prev="+tPrev[-3:])
          tokenFeatures.append("pre3Prev="+tPrev[:3])
          #tokenFeatures.append("postagPrev="+pos_tags[k-1][1])
@@ -151,6 +152,7 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
          tNext = tokens[k+1][0]
          tokenFeatures.append("formNext="+tNext)
          #tokenFeatures.append("lowerformNext="+tNext.lower())
+         #tokenFeatures.append("lengthNext="+str(len(str(tNext))))
          tokenFeatures.append("suf3Next="+tNext[-3:])
          tokenFeatures.append("pre3Next="+tNext[:3])
          #tokenFeatures.append("postagNext="+pos_tags[k+1][1])
