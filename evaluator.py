@@ -152,7 +152,7 @@ def print_statistics(gold,predicted) :
     (tp,fp,fn,npred,nexp,P,R,F1) = statistics(gold, predicted, "CLASS")
     print(row("m.avg")+"{:>4}\t{:>4}\t{:>4}\t{:>4}\t{:>4}\t{:2.1%}\t{:2.1%}\t{:2.1%}".format(tp,fp,fn,npred,nexp, P, R, F1))                        
     (tp,fp,fn,npred,nexp,P,R,F1) = statistics(gold, predicted, "NOCLASS")
-    print(row("m.avg(no class)")+"{:>4}\t{:>4}\t{:>4}\t{:>4}\t{:>4}\t{:2.1%}\t{:2.1%}\t{:2.1%}".format(tp,fp,fn,npred,nexp, P, R, F1))               
+    print(row("m.avg(no_class)")+"{:>4}\t{:>4}\t{:>4}\t{:>4}\t{:>4}\t{:2.1%}\t{:2.1%}\t{:2.1%}".format(tp,fp,fn,npred,nexp, P, R, F1))               
 
 ## --
 ## -- Evaluates results in outfile comparing them with gold standard in golddir.

@@ -66,22 +66,29 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       tokenFeatures = []
       t = tokens[k][0]
 
+      ##################################Form#####################################
       tokenFeatures.append("form="+t)
       tokenFeatures.append("lowerform="+t.lower())
       tokenFeatures.append("length="+str(len(str(t))))
       tokenFeatures.append("suf3="+t[-3:])
       tokenFeatures.append("pre3="+t[:3])
 
-      #POSTagging
-      tokenFeatures.append("postag="+pos_tags[k][1])
+      ##############################POSTagging####################################
+      pos = pos_tags[k][1]
+      #tokenFeatures.append("postag="+pos_tags[k][1])
 
-      #Lemmatizer
+      '''if pos[0] == 'N':
+         tokenFeatures.append("noun=True")
+      else:
+         tokenFeatures.append("noun=False")'''
+
+      ##############################Lemmatizer####################################
       '''lemmatizer = WordNetLemmatizer()
       pos = pos_tags[k][1]
       lemma = lemmatizer.lemmatize(t, pos=get_wordnet_pos(pos))
       tokenFeatures.append("lemma="+lemma)'''
 
-      #Dashes and numbers
+      #############################Dashes and numbers#############################
       if re.search(r'[0-9-]', t):
          if re.search(r'[a-zA-Z]', t):
             tokenFeatures.append("has_spcar=Some")
@@ -90,22 +97,22 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       else:
          tokenFeatures.append("has_spcar=None")
       
-      #Numbers
+      ###############################Numbers######################################
       '''if re.search(r'\d', t):
          if re.search(r'[a-zA-Z]', t):
             tokenFeatures.append("has_num=Some")
          else:
             tokenFeatures.append("has_num=All")
       else: 
-         tokenFeatures.append("has_num=None")
+         tokenFeatures.append("has_num=None")'''
 
-      #Dashes
-      if '-' in t:
+      ###############################Dashes########################################
+      '''if '-' in t:
          tokenFeatures.append("dashes=Yes")
       else:
          tokenFeatures.append("dashes=No")'''
 
-      #Capital patterns
+      ##############################Capital patterns###############################
       if t.isupper():
          tokenFeatures.append("cap=All")
       elif t[0].isupper():
@@ -113,6 +120,13 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       else:  
          tokenFeatures.append("cap=None")
 
+      ###############################Ends in s#######################################
+      if t[-1] == 's':
+         tokenFeatures.append("is_plural=Yes")
+      else:
+         tokenFeatures.append("is_plural=No")
+      
+      ################################Resources####################################
       if t.lower() in drugs:
          tokenFeatures.append("resource=Drug")
       elif t.lower() in drug_names:
@@ -124,7 +138,7 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       else:
          tokenFeatures.append("resource=None")
 
-      #Previous word
+      ##############################Previous token##################################
       if k>0:
          tPrev = tokens[k-1][0]
          tokenFeatures.append("formPrev="+tPrev)
@@ -137,7 +151,7 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
          tokenFeatures.append("BoS")
          #tokenFeatures.append("cap=False")
 
-      #2-previous word
+      #2-previous token
       '''if k>1 and k!= 0:
          tPrev = tokens[k-2][0]
          tokenFeatures.append("formPrev2="+tPrev)
@@ -147,7 +161,7 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
          tokenFeatures.append("formPrev2=None")
          #tokenFeatures.append("cap=False")'''
 
-      #Next word
+      #################################Next token###################################
       if k<len(tokens)-1 :
          tNext = tokens[k+1][0]
          tokenFeatures.append("formNext="+tNext)
@@ -163,7 +177,7 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       else:
          tokenFeatures.append("EoS")
 
-      #2-next word
+      #2-next token
       '''if k<len(tokens)-2 and k != len(tokens)-1:
          tNext = tokens[k+2][0]
          tokenFeatures.append("formNext2="+tNext)
@@ -172,13 +186,7 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       else:
          tokenFeatures.append("formNext2=None")'''
       
-      #Ends in s
-      '''if t[-1] == 's':
-         tokenFeatures.append("is_plural=Yes")
-      else:
-         tokenFeatures.append("is_plural=No")'''
-      
-    
+   
       result.append(tokenFeatures)
     
    return result
