@@ -66,14 +66,14 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       tokenFeatures = []
       t = tokens[k][0]
 
-      ##################################Form#####################################
+      ##################################Form##################################### YES
       tokenFeatures.append("form="+t)
       tokenFeatures.append("lowerform="+t.lower())
       tokenFeatures.append("length="+str(len(str(t))))
       tokenFeatures.append("suf3="+t[-3:])
       tokenFeatures.append("pre3="+t[:3])
 
-      ##############################POSTagging####################################
+      ##############################POSTagging#################################### NO
       pos = pos_tags[k][1]
       #tokenFeatures.append("postag="+pos_tags[k][1])
 
@@ -82,13 +82,13 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       else:
          tokenFeatures.append("noun=False")'''
 
-      ##############################Lemmatizer####################################
+      ##############################Lemmatizer#################################### NO
       '''lemmatizer = WordNetLemmatizer()
       pos = pos_tags[k][1]
       lemma = lemmatizer.lemmatize(t, pos=get_wordnet_pos(pos))
       tokenFeatures.append("lemma="+lemma)'''
 
-      #############################Dashes and numbers#############################
+      #############################Dashes and numbers############################# YES
       if re.search(r'[0-9-]', t):
          if re.search(r'[a-zA-Z]', t):
             tokenFeatures.append("has_spcar=Some")
@@ -97,7 +97,7 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       else:
          tokenFeatures.append("has_spcar=None")
       
-      ###############################Numbers######################################
+      ###############################Numbers###################################### NO
       '''if re.search(r'\d', t):
          if re.search(r'[a-zA-Z]', t):
             tokenFeatures.append("has_num=Some")
@@ -106,13 +106,13 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       else: 
          tokenFeatures.append("has_num=None")'''
 
-      ###############################Dashes########################################
-      '''if '-' in t:
+      ###############################Dashes######################################## NO
+      if '-' in t:
          tokenFeatures.append("dashes=Yes")
       else:
-         tokenFeatures.append("dashes=No")'''
+         tokenFeatures.append("dashes=No")
 
-      ##############################Capital patterns###############################
+      ##############################Capital patterns############################### YES
       if t.isupper():
          tokenFeatures.append("cap=All")
       elif t[0].isupper():
@@ -120,14 +120,14 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       else:  
          tokenFeatures.append("cap=None")
 
-      ###############################Ends in s#######################################
-      if t[-1] == 's':
+      ###############################Ends in s####################################### YES
+      '''if t[-1] == 's':
          tokenFeatures.append("is_plural=Yes")
       else:
-         tokenFeatures.append("is_plural=No")
+         tokenFeatures.append("is_plural=No")'''
       
-      ################################Resources####################################
-      if t.lower() in drugs:
+      ################################Resources#################################### YES
+      '''if t.lower() in drugs:
          tokenFeatures.append("resource=Drug")
       elif t.lower() in drug_names:
          tokenFeatures.append("resource=Drug_n")
@@ -136,20 +136,19 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       elif t.lower() in groups:
          tokenFeatures.append("resource=Group")
       else:
-         tokenFeatures.append("resource=None")
+         tokenFeatures.append("resource=None")'''
 
       ##############################Previous token##################################
       if k>0:
          tPrev = tokens[k-1][0]
          tokenFeatures.append("formPrev="+tPrev)
-         #tokenFeatures.append("lowerformPrev="+tPrev.lower())
-         #tokenFeatures.append("lengthPrev="+str(len(str(tPrev))))
+         #tokenFeatures.append("lowerformPrev="+tPrev.lower()) NO
+         #tokenFeatures.append("lengthPrev="+str(len(str(tPrev)))) NO
          tokenFeatures.append("suf3Prev="+tPrev[-3:])
          tokenFeatures.append("pre3Prev="+tPrev[:3])
-         #tokenFeatures.append("postagPrev="+pos_tags[k-1][1])
+         #tokenFeatures.append("postagPrev="+pos_tags[k-1][1]) NO
       else: 
          tokenFeatures.append("BoS")
-         #tokenFeatures.append("cap=False")
 
       #2-previous token
       '''if k>1 and k!= 0:
@@ -165,11 +164,11 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       if k<len(tokens)-1 :
          tNext = tokens[k+1][0]
          tokenFeatures.append("formNext="+tNext)
-         #tokenFeatures.append("lowerformNext="+tNext.lower())
-         #tokenFeatures.append("lengthNext="+str(len(str(tNext))))
+         #tokenFeatures.append("lowerformNext="+tNext.lower()) NO
+         #tokenFeatures.append("lengthNext="+str(len(str(tNext)))) NO
          tokenFeatures.append("suf3Next="+tNext[-3:])
          tokenFeatures.append("pre3Next="+tNext[:3])
-         #tokenFeatures.append("postagNext="+pos_tags[k+1][1])
+         #tokenFeatures.append("postagNext="+pos_tags[k+1][1])  NO
          '''if tNext in ['Acid','acid'] or t in ['Acid','acid']:
             tokenFeatures.append("isAcid=Yes")
          else:
