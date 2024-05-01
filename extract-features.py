@@ -121,13 +121,13 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
          tokenFeatures.append("cap=None")
 
       ###############################Ends in s####################################### YES
-      '''if t[-1] == 's':
+      if t[-1] == 's':
          tokenFeatures.append("is_plural=Yes")
       else:
-         tokenFeatures.append("is_plural=No")'''
+         tokenFeatures.append("is_plural=No")
       
       ################################Resources#################################### YES
-      '''if t.lower() in drugs:
+      if t.lower() in drugs:
          tokenFeatures.append("resource=Drug")
       elif t.lower() in drug_names:
          tokenFeatures.append("resource=Drug_n")
@@ -136,7 +136,7 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
       elif t.lower() in groups:
          tokenFeatures.append("resource=Group")
       else:
-         tokenFeatures.append("resource=None")'''
+         tokenFeatures.append("resource=None")
 
       ##############################Previous token##################################
       if k>0:
@@ -169,10 +169,10 @@ def extract_features(tokens, drugs, brands, groups, drug_names) :
          tokenFeatures.append("suf3Next="+tNext[-3:])
          tokenFeatures.append("pre3Next="+tNext[:3])
          #tokenFeatures.append("postagNext="+pos_tags[k+1][1])  NO
-         '''if tNext in ['Acid','acid'] or t in ['Acid','acid']:
+         if tNext in ['Acid','acid'] or t in ['Acid','acid']:
             tokenFeatures.append("isAcid=Yes")
          else:
-            tokenFeatures.append("isAcid=No")'''
+            tokenFeatures.append("isAcid=No")
       else:
          tokenFeatures.append("EoS")
 
